@@ -1,0 +1,20 @@
+body {
+  background-color: #F8F6DF;
+}
+
+.main-image-container {
+  display: flex;
+  justify-content: center;
+  margin: 0; /* 네비게이션 바 바로 밑에 붙도록 마진 제거 */
+  padding-top: 0px; /* 상단에 약간의 패딩 추가 */
+}
+
+.main-image {
+  max-width: 100vh;
+  height: 30%;
+}
+
+.main-image-container {
+  display: flex;
+  justify-content: center;
+}
