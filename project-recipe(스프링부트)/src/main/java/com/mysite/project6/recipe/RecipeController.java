@@ -71,10 +71,15 @@
 
 package com.mysite.project6.recipe;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -123,6 +128,21 @@ public class RecipeController {
 			throw new IllegalArgumentException("Invalid search type: " + searchType);
 		}
 	}
+	
+	@GetMapping("/{id}/photos")
+    public ResponseEntity<Map<String, Object>> getPhotos(@PathVariable("id") Long recipeId) {
+        List<Photo> photos = photoRepository.findByRecipeId(recipeId);
+
+        if (photos.isEmpty()) {
+            return ResponseEntity.noContent().build();  // No content found
+        }
+
+        // Assuming the response structure includes embedded photos
+        Map<String, Object> response = new HashMap<>();
+        response.put("_embedded", Collections.singletonMap("photos", photos));
+
+        return ResponseEntity.ok(response);
+    }
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Recipe> getRecipeById(@PathVariable Integer id) {
@@ -209,6 +229,16 @@ public class RecipeController {
 	        return ResponseEntity.notFound().build();
 	    }
 	}
+	
+	 @DeleteMapping("/{id}")
+	    public ResponseEntity<Void> deleteRecipe(@PathVariable Integer id) {
+	        try {
+	        	 recipeRepository.deleteById(id);
+	            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	        } catch (Exception ex) {
+	            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
 
 // 	private RecipeService recipeService;
 // 	private UserService userService;

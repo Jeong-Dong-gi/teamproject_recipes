@@ -73,6 +73,16 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        // 사용자 ID로 사용자 조회
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        
+        // 조회된 사용자 반환
+        return ResponseEntity.ok(user);
+    }
+    
     
     @PostMapping("/{userId}/recipes/{recipeId}/bookmark")
     public ResponseEntity<?> bookmarkRecipe(@PathVariable Long userId, @PathVariable Integer recipeId) {
