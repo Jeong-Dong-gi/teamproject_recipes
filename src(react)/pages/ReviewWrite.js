@@ -33,14 +33,6 @@ const ReviewWrite = () => {
     formData.append('image', image);
     formData.append('content', content);
 
-    // 예시로, formData를 서버로 전송하는 로직을 작성합니다.
-    // fetch('http://localhost:5000/reviews', {
-    //   method: 'POST',
-    //   body: formData,
-    // }).then(() => {
-    //   navigate('/review');
-    // });
-
     console.log({ title, image, content });
     navigate('/review');
   };

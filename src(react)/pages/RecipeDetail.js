@@ -245,19 +245,6 @@ const RecipeDetail = ({ userData }) => {
     }
   };
 
-  // useEffect(()=>{
-  //   if (bookMark.length > 0) {
-  //     const foundBookmark = bookMark.find(bookmark => bookmark.id === id);
-  //     if (foundBookmark) {
-  //       console.log(`Found bookmark with id ${foundBookmark.id}`);
-  //       setBookmarked(true);
-  //     } else {
-  //       console.log(`Bookmark with id ${id} not found`);
-  //       setBookmarked(false);
-  //     }
-  //   }
-  // })
-
   console.log(bookmarked)
   console.log(id)
 
@@ -295,12 +282,9 @@ const RecipeDetail = ({ userData }) => {
             throw new Error('북마크 상태 업데이트에 실패했습니다.');
         }
         console.log('북마크 상태 업데이트 성공');
-        // 추가적인 클라이언트 측 로직이 필요한 경우 구현
-        // localStorage.setItem('bookmarkStatus', JSON.stringify({ userId, recipeId, isBookmarked }));
     })
     .catch(error => {
         console.error('Error updating bookmark status:', error);
-        // 오류 처리 로직 추가
     });
   };
 
