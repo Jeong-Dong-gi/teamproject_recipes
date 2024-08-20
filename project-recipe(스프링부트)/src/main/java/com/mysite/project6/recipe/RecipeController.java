@@ -170,8 +170,5 @@ public class RecipeController {
 	        }
 	    }
 
-// 	private RecipeService recipeService;
-// 	private UserService userService;
-
 }
 
