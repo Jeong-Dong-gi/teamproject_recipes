@@ -49,30 +49,9 @@ export default function Editform({ userData }) {
         console.log("확인");
         console.log(data.ingredients);
 
-        // const ingredientsResponse = await fetch(data.ingredients);
-        // if (!ingredientsResponse.ok) {
-        //   throw new Error("Failed to fetch ingredients");
-        // }
-        // const ingredientsData = await ingredientsResponse.json();
-        // setIngredients(ingredientsData._embedded.ingredients);
-
         setIngredients(data.ingredients);
 
-        // const cookingStepsResponse = await fetch(data._links.cookingSteps.href);
-        // if (!cookingStepsResponse.ok) {
-        //   throw new Error("Failed to fetch cooking steps");
-        // }
-        // const cookingStepsData = await cookingStepsResponse.json();
-        // setCookingSteps(cookingStepsData._embedded.cookingSteps);
-
         setCookingSteps(data.cookingSteps);
-
-        // const imagesResponse = await fetch(data._links.photos.href);
-        // if (!imagesResponse.ok) {
-        //   throw new Error("Failed to fetch images");
-        // }
-        // const imagesData = await imagesResponse.json();
-        // setImages(imagesData._embedded.photos);
 
         setImages(data.photos);
       } catch (error) {
@@ -91,25 +70,6 @@ export default function Editform({ userData }) {
     const files = Array.from(e.target.files);
     setImages(files);
   };
-
-  // const ingredientChange = (index, e) => {
-  //   const newIngredients = [...ingredients];
-  //   newIngredients[index] = {
-  //     ...newIngredients[index],
-  //     [e.target.name]: e.target.value,
-  //   };
-  //   setIngredients(newIngredients);
-  //   setRecipe({...recipe, ingredients:newIngredients})
-  // };
-
-  // const handleAddIngredient = () => {
-  //   setIngredients([...ingredients, { ingredient: "", amount: "" }]);
-  // };
-
-  // const handleRemoveIngredient = (index) => {
-  //   const newIngredients = ingredients.filter((_, i) => i !== index);
-  //   setIngredients(newIngredients);
-  // };
 
   const ingredientChange = (index, e) => {
     const newIngredients = [...ingredients];
