@@ -40,6 +40,9 @@ const RecipeDetail = ({ userData }) => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
 
+
+  console.log(userData)
+
   useEffect(() => {
     const fetchRecipeUser = async () => {
       try {
@@ -65,59 +68,6 @@ const RecipeDetail = ({ userData }) => {
 
     fetchRecipeUser();
   }, []);
-
-
-  useEffect(() => {
-    const fetchBookmarks = () => {
-      let fetchedBookMark = []; // 초기화된 상태
-  
-      if (userData && userData._links && userData._links.self && userData._links.self.href) {
-        const userId = getUserIdFromUrl(userData._links.self.href);
-        axios.get(`http://localhost:8080/api/users/${userId}/bookmark`)
-          .then(response => {
-            fetchedBookMark = response.data; // bookMark 업데이트
-            setBookMark(fetchedBookMark); // bookMark 설정
-          })
-          .catch(error => {
-            console.error('Error fetching bookmarks:', error);
-          });
-      }
-  
-      if (userData && userData.id) {
-        axios.get(`http://localhost:8080/api/users/${userData.id}/bookmark`)
-          .then(response => {
-            fetchedBookMark = response.data; // bookMark 업데이트
-            setBookMark(fetchedBookMark); // bookMark 설정
-          })
-          .catch(error => {
-            console.error('Error fetching bookmarks:', error);
-          });
-      }
-    };
-  
-    fetchBookmarks();
-  }, []); // userData나 id가 변경될 때마다 useEffect 실행
-
-  useEffect(()=>{
-    console.log("확인용",bookMark)
-    if (bookMark !== null) {
-      const foundBookmark = bookMark.find(bookmark => bookmark.id === parseInt(id));
-      if (foundBookmark) {
-        setBookmarked(true);
-      } else {
-        setBookmarked(false);
-      }
-    }
-  },[bookMark])
-
-  // url에서 id만 가져오기
-  const getUserIdFromUrl = (url) => {
-    const lastSlashIndex = url.lastIndexOf('/');
-    return url.substring(lastSlashIndex + 1);
-  };
-
-  console.log("북마크:", bookMark)
-  console.log(recipe)
 
 
   useEffect(() => {
@@ -282,9 +232,12 @@ const RecipeDetail = ({ userData }) => {
             throw new Error('북마크 상태 업데이트에 실패했습니다.');
         }
         console.log('북마크 상태 업데이트 성공');
+        // 추가적인 클라이언트 측 로직이 필요한 경우 구현
+        // localStorage.setItem('bookmarkStatus', JSON.stringify({ userId, recipeId, isBookmarked }));
     })
     .catch(error => {
         console.error('Error updating bookmark status:', error);
+        // 오류 처리 로직 추가
     });
   };
 
@@ -364,6 +317,7 @@ const RecipeDetail = ({ userData }) => {
 
     if (editingCommentId !== null) {
       // If editing existing comment
+      console.log(Comment)
       try {
         const response = await fetch(
           `http://localhost:8080/api/comments/${editingCommentId}`,
@@ -442,7 +396,7 @@ const RecipeDetail = ({ userData }) => {
   const HandleEditPost = () => {
     // userData가 존재하지 않거나 userData.recipes가 존재하지 않으면 "로그인 해주세요" 경고 메시지 표시
     if (!userInfo || !userInfo.recipes) {
-      alert(userInfo);
+      alert("권한이 없습니다.");
       return;
     }
 
@@ -461,6 +415,39 @@ const RecipeDetail = ({ userData }) => {
       alert("권한이 없습니다.");
     }
   };
+
+  const HandleDeletePost = async () => {
+    // userInfo가 존재하지 않거나 userInfo.recipes가 존재하지 않으면 "권한이 없습니다." 경고 메시지 표시
+    if (!userInfo || !userInfo.recipes) {
+      alert("권한이 없습니다.");
+      return;
+    }
+  
+    // id를 정수로 변환
+    const numericId = parseInt(id, 10);
+  
+    // userInfo.recipes에서 해당 id와 일치하는 recipe를 찾기
+    const recipeToDelete = userInfo.recipes.find(
+      (recipe) => recipe.id === numericId
+    );
+  
+    if (recipeToDelete) {
+      try {
+        // 레시피 삭제 API 호출
+        await axios.delete(`/api/recipes/${numericId}`);
+        console.log("레시피가 삭제되었습니다.");
+        alert("레시피가 삭제되었습니다.");
+  
+        // 페이지를 업데이트하거나, 삭제 후 페이지를 리다이렉션할 경우
+        navigate('/Main'); // 예를 들어, 레시피 목록 페이지로 리다이렉션
+      } catch (error) {
+        console.error("레시피 삭제 중 오류 발생:", error);
+        alert("레시피 삭제에 실패했습니다. 다시 시도해 주세요.");
+      }
+    } else {
+      alert("레시피를 찾을 수 없습니다.");
+    }
+  }
 
   if (!recipe) {
     return <div>Recipe not found</div>;
@@ -524,6 +511,7 @@ const RecipeDetail = ({ userData }) => {
         </ol>
       </RecipeContent>
       <EditButton onClick={HandleEditPost}>게시글 수정</EditButton>
+      <EditButton onClick={HandleDeletePost}>게시글 삭제</EditButton>
       <CommentsSection>
         <h3>댓글</h3>
         <CommentForm onSubmit={handleCommentSubmit}>
