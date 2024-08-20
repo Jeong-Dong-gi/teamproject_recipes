@@ -1,0 +1,28 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  cursor: pointer;
+  margin: 5px 0;
+}
+
+li:hover {
+  text-decoration: underline;
+}
