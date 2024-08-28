@@ -40,9 +40,6 @@ const RecipeDetail = ({ userData }) => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
 
-
-  console.log(userData)
-
   useEffect(() => {
     const fetchRecipeUser = async () => {
       try {
@@ -435,11 +432,10 @@ const RecipeDetail = ({ userData }) => {
       try {
         // 레시피 삭제 API 호출
         await axios.delete(`/api/recipes/${numericId}`);
-        console.log("레시피가 삭제되었습니다.");
         alert("레시피가 삭제되었습니다.");
   
         // 페이지를 업데이트하거나, 삭제 후 페이지를 리다이렉션할 경우
-        navigate('/Main'); // 예를 들어, 레시피 목록 페이지로 리다이렉션
+        navigate('/Main');
       } catch (error) {
         console.error("레시피 삭제 중 오류 발생:", error);
         alert("레시피 삭제에 실패했습니다. 다시 시도해 주세요.");
