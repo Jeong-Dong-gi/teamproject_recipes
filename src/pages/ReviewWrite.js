@@ -33,7 +33,6 @@ const ReviewWrite = () => {
     formData.append('image', image);
     formData.append('content', content);
 
-    console.log({ title, image, content });
     navigate('/review');
   };
 

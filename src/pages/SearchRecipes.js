@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function SearchRecipes({ searchResults }) {
-    console.log(searchResults)
   return (
     <div>
       <ul>

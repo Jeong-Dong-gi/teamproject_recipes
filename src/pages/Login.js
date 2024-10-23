@@ -37,8 +37,6 @@ const Login = ({ setIsLoggedIn, setUserData, userData }) => {
       });
   };
 
-  console.log(userCheck)
-
   useEffect(() => {
     userInfoCheck();
   }, []);
@@ -55,7 +53,6 @@ const Login = ({ setIsLoggedIn, setUserData, userData }) => {
     const isPassword = userCheck.some((UC) => {
       if (UC.userID === user.userID && UC.password === user.userPW) {
         setUserData(UC); // 조건을 만족하는 UC 정보를 저장
-        // console.log(UC)
         return true; // 조건을 만족하면 true 반환
       }
       return false; // 조건을 만족하지 않으면 false 반환

@@ -68,6 +68,54 @@ const RecipeDetail = ({ userData }) => {
 
 
   useEffect(() => {
+    const fetchBookmarks = () => {
+      let fetchedBookMark = []; // 초기화된 상태
+  
+      if (userData && userData._links && userData._links.self && userData._links.self.href) {
+        const userId = getUserIdFromUrl(userData._links.self.href);
+        axios.get(`http://localhost:8080/api/users/${userId}/bookmark`)
+          .then(response => {
+            fetchedBookMark = response.data; // bookMark 업데이트
+            setBookMark(fetchedBookMark); // bookMark 설정
+          })
+          .catch(error => {
+            console.error('Error fetching bookmarks:', error);
+          });
+      }
+  
+      if (userData && userData.id) {
+        axios.get(`http://localhost:8080/api/users/${userData.id}/bookmark`)
+          .then(response => {
+            fetchedBookMark = response.data; // bookMark 업데이트
+            setBookMark(fetchedBookMark); // bookMark 설정
+          })
+          .catch(error => {
+            console.error('Error fetching bookmarks:', error);
+          });
+      }
+    };
+  
+    fetchBookmarks();
+  }, []); // userData나 id가 변경될 때마다 useEffect 실행
+
+  useEffect(()=>{
+    if (bookMark !== null) {
+      const foundBookmark = bookMark.find(bookmark => bookmark.id === parseInt(id));
+      if (foundBookmark) {
+        setBookmarked(true);
+      } else {
+        setBookmarked(false);
+      }
+    }
+  },[bookMark])
+
+  // url에서 id만 가져오기
+  const getUserIdFromUrl = (url) => {
+    const lastSlashIndex = url.lastIndexOf('/');
+    return url.substring(lastSlashIndex + 1);
+  };
+
+  useEffect(() => {
     const fetchRecipe = async () => {
       try {
         const response = await fetch(`http://localhost:8080/api/recipes/${id}`);
@@ -167,7 +215,6 @@ const RecipeDetail = ({ userData }) => {
         return response.json();
       })
       .then((updatedUserData) => {
-        console.log("updated successfully:", updatedUserData);
         setUserInfo(updatedUserData); // 업데이트된 사용자 데이터로 상태 업데이트
       })
       .catch((error) => {
@@ -191,9 +238,6 @@ const RecipeDetail = ({ userData }) => {
       alert("로그인 후 이용 가능합니다."); // 로그인되지 않은 경우 경고 메시지 표시
     }
   };
-
-  console.log(bookmarked)
-  console.log(id)
 
   const handleBookmarkClick = () => {
     if (userData !== "") {
@@ -228,9 +272,6 @@ const RecipeDetail = ({ userData }) => {
         if (!response.ok) {
             throw new Error('북마크 상태 업데이트에 실패했습니다.');
         }
-        console.log('북마크 상태 업데이트 성공');
-        // 추가적인 클라이언트 측 로직이 필요한 경우 구현
-        // localStorage.setItem('bookmarkStatus', JSON.stringify({ userId, recipeId, isBookmarked }));
     })
     .catch(error => {
         console.error('Error updating bookmark status:', error);
@@ -281,7 +322,6 @@ const RecipeDetail = ({ userData }) => {
                 response.data._embedded.comments
               ) {
                 setComments(response.data._embedded.comments);
-                console.log("Comment deleted successfully");
               } else {
                 console.error("Invalid response format:", response);
               }
@@ -298,9 +338,6 @@ const RecipeDetail = ({ userData }) => {
     }
   };
 
-  console.log(editingCommentId);
-  console.log(`comments : ${comments}`);
-
   const handleCommentSubmit = async (e) => {
     // 로그인 후 댓글 가능
     if (userData === "") {
@@ -314,7 +351,6 @@ const RecipeDetail = ({ userData }) => {
 
     if (editingCommentId !== null) {
       // If editing existing comment
-      console.log(Comment)
       try {
         const response = await fetch(
           `http://localhost:8080/api/comments/${editingCommentId}`,
@@ -378,7 +414,6 @@ const RecipeDetail = ({ userData }) => {
           response.data._embedded.comments
         ) {
           setComments(response.data._embedded.comments);
-          console.log("Comment deleted successfully");
         } else {
           console.error("Invalid response format:", response);
         }
@@ -388,12 +423,10 @@ const RecipeDetail = ({ userData }) => {
       });
   };
 
-  console.log(userData);
-
   const HandleEditPost = () => {
     // userData가 존재하지 않거나 userData.recipes가 존재하지 않으면 "로그인 해주세요" 경고 메시지 표시
     if (!userInfo || !userInfo.recipes) {
-      alert("권한이 없습니다.");
+      alert(userInfo);
       return;
     }
 
@@ -406,44 +439,11 @@ const RecipeDetail = ({ userData }) => {
     );
 
     if (recipeToEdit) {
-      console.log("수정할 레시피를 찾았습니다.");
       navigate(`/edit/${id}`);
     } else {
       alert("권한이 없습니다.");
     }
   };
-
-  const HandleDeletePost = async () => {
-    // userInfo가 존재하지 않거나 userInfo.recipes가 존재하지 않으면 "권한이 없습니다." 경고 메시지 표시
-    if (!userInfo || !userInfo.recipes) {
-      alert("권한이 없습니다.");
-      return;
-    }
-  
-    // id를 정수로 변환
-    const numericId = parseInt(id, 10);
-  
-    // userInfo.recipes에서 해당 id와 일치하는 recipe를 찾기
-    const recipeToDelete = userInfo.recipes.find(
-      (recipe) => recipe.id === numericId
-    );
-  
-    if (recipeToDelete) {
-      try {
-        // 레시피 삭제 API 호출
-        await axios.delete(`/api/recipes/${numericId}`);
-        alert("레시피가 삭제되었습니다.");
-  
-        // 페이지를 업데이트하거나, 삭제 후 페이지를 리다이렉션할 경우
-        navigate('/Main');
-      } catch (error) {
-        console.error("레시피 삭제 중 오류 발생:", error);
-        alert("레시피 삭제에 실패했습니다. 다시 시도해 주세요.");
-      }
-    } else {
-      alert("레시피를 찾을 수 없습니다.");
-    }
-  }
 
   if (!recipe) {
     return <div>Recipe not found</div>;
@@ -456,7 +456,6 @@ const RecipeDetail = ({ userData }) => {
         const filename = image.photo.substring(
           image.photo.lastIndexOf("/") + 1
         );
-        console.log(filename); // 파일 이름을 출력
 
         return (
           <RecipeImage
@@ -507,7 +506,6 @@ const RecipeDetail = ({ userData }) => {
         </ol>
       </RecipeContent>
       <EditButton onClick={HandleEditPost}>게시글 수정</EditButton>
-      <EditButton onClick={HandleDeletePost}>게시글 삭제</EditButton>
       <CommentsSection>
         <h3>댓글</h3>
         <CommentForm onSubmit={handleCommentSubmit}>
@@ -528,8 +526,6 @@ const RecipeDetail = ({ userData }) => {
         </CommentForm>
         <CommentList>
           {comments.map((comment) => {
-            console.log(comment); // 댓글 객체 출력
-
             return (
               <CommentItem key={comment.id}>
                 <p>

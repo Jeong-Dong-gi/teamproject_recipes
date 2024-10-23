@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const MyPageContainer = styled.div`
   padding: 20px;
@@ -37,7 +38,7 @@ export const CenterImage = styled.img`
   margin-bottom: 10px;
 `;
 
-export const RegisterButton = styled.button`
+export const RegisterButton = styled(Link)`
   padding: 10px 20px;
   background-color: #B0BA1C;
   color: white;

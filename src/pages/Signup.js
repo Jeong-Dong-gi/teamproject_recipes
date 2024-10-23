@@ -44,8 +44,6 @@ const Signup = () => {
     fetchDuple();
   }, []);
 
-  console.log(userDuple);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (user.password !== confirmPassword) {
@@ -86,9 +84,6 @@ const Signup = () => {
       body: JSON.stringify(user),
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
       .catch((err) => console.error("Failed to save recipe:", err));
   };
 

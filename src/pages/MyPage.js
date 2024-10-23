@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../components/modal/Modal";
-import { useNavigate } from "react-router-dom";
 import {
   MyPageContainer,
   TabMenu,
@@ -23,8 +22,6 @@ const MyPage = ({ userData, setUserData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recipes, setRecipes] = useState([]);
   const [bookMark, setBookMark] = useState([]);
-
-  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -66,23 +63,13 @@ const MyPage = ({ userData, setUserData }) => {
     return url.substring(lastSlashIndex + 1);
   };
 
-  console.log(userData)
-  console.log(bookMark)
-
   const handleNicknameChange = (e) => {
     setUserData({ ...userData, username: e.target.value });
   };
 
   const toggleEditing = () => {
-    if (!userData || !userData.id) {
-      alert("로그인을 해주세요")
-      navigate("/login");
-      return;
-    }
     setIsEditing(!isEditing);
   };
-
-  console.log(userData);
 
   const updateNickname = () => {
     if (!userData || !userData._links || !userData._links.self) {
@@ -104,7 +91,6 @@ const MyPage = ({ userData, setUserData }) => {
         return response.json();
       })
       .then((updatedUserData) => {
-        console.log("updated successfully:", updatedUserData);
         setUserData(updatedUserData); // 업데이트된 사용자 데이터로 상태 업데이트
       })
       .catch((error) => {
@@ -118,20 +104,12 @@ const MyPage = ({ userData, setUserData }) => {
     }
   }, []);
 
-  const registrationRecipe = () => {
-    if (!userData || !userData.id) {
-      alert("로그인을 해주세요")
-      navigate("/login");
-      return;
-    }
-      navigate("/write")
-  }
-
   const reUpdateNickname = () => {
     if (!userData || !userData.id) {
       alert("로그인을 해주세요")
-      navigate("/login");
+      return;
     }
+
     fetch(`http://localhost:8080/api/users/${userData.id}`, {
       method: "PUT",
       headers: {
@@ -146,7 +124,6 @@ const MyPage = ({ userData, setUserData }) => {
         return response.json();
       })
       .then((updatedUserData) => {
-        console.log("Nickname updated successfully:", updatedUserData);
         setUserData(updatedUserData); // 업데이트된 사용자 데이터로 상태 업데이트
         setIsEditing(false); // 수정 모드 종료
       })
@@ -243,7 +220,7 @@ const MyPage = ({ userData, setUserData }) => {
         <p>
           자랑하고 싶은 나만의 레시피! 공유하고 싶은 멋진 레시피를 올려 주세요.
         </p>
-        <RegisterButton onClick={registrationRecipe}>레시피 등록하기</RegisterButton>
+        <RegisterButton to="/write">레시피 등록하기</RegisterButton>
       </Content>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         {activeTab === "레시피" && (

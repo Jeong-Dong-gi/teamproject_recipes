@@ -40,8 +40,6 @@ const Category = ({ searchQuery }) => {
     }
   };
 
-  console.log(searchQuery);
-
   const filteredRankings = rankings.filter((post) => {
     if (!post || !post.title) {
       return false; // If post or title is undefined or null, filter it out
@@ -58,12 +56,7 @@ const Category = ({ searchQuery }) => {
     return categoryMatch && levelMatch && searchMatch;
   });
 
-  console.log(filteredRankings);
-
-  console.log(selectedCategories)
-
-  console.log(rankings)
-
+  
   return (
     <CategoryPage>
       <h2>분류 페이지</h2>

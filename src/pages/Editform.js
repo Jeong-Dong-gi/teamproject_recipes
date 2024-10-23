@@ -46,9 +46,6 @@ export default function Editform({ userData }) {
         const data = await response.json();
         setRecipe(data);
 
-        console.log("확인");
-        console.log(data.ingredients);
-
         setIngredients(data.ingredients);
 
         setCookingSteps(data.cookingSteps);
@@ -87,7 +84,15 @@ export default function Editform({ userData }) {
   };
   
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, { ingredient: "", amount: "" }]);
+    const newIngredient = {
+      ingredient: "",
+      amount: "",
+    };
+    setIngredients([...ingredients, newIngredient]);
+    setRecipe({
+      ...recipe,
+      ingredients: [...ingredients, newIngredient], // 수정된 단계 목록을 반영
+    });
   };
   
   const handleRemoveIngredient = (index) => {
@@ -163,7 +168,6 @@ export default function Editform({ userData }) {
         return response.json(); // 서버에서 Recipe를 정상적으로 받으면 JSON으로 파싱
       })
       .then((data) => {
-        console.log("Recipe updated:", data);
         navigate("/mypage"); // 수정 후 페이지 이동
       })
       .catch((err) => console.error("Failed to update recipe:", err));

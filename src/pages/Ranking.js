@@ -58,8 +58,6 @@ const Ranking = () => {
     }
   }, [recipes]);
 
-  console.log(recipes)
-
   return (
     <RankingPage>
       <h2>🍳 레시피 랭킹</h2>

@@ -90,10 +90,9 @@ export default function Write({ userData }) {
     e.preventDefault();
 
     const formData = new FormData();
-    images.forEach((image, index) => {
+    images.forEach((image) => {
       formData.append(`files`, image); // 사진 파일 추가
     });
-    //formData.append("file", image); // 사진 파일 추가
     formData.append("recipe", JSON.stringify(recipe)); // 레시피 데이터 추가
 
     fetch("http://localhost:8080/recipes/add", {
@@ -101,11 +100,8 @@ export default function Write({ userData }) {
       body: formData,
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Recipe saved:", data);
-        // 저장 후 필요한 동작 수행
-        navigate("/mypage"); // 저장 후 페이지 이동
-      })
+      .then(()=> {navigate("/mypage");})
+
       .catch((err) => console.error("Failed to save recipe:", err));
   };
 
